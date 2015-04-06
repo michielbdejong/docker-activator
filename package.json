@@ -1,0 +1,9 @@
+{
+  "name": "docker-activator",
+  "repository": "https://github.com/michielbdejong/docker-activator",
+  "version": "0.0.0",
+  "dependencies": {
+    "dockerode": "*"
+  },
+  "main": "index.js"
+}
