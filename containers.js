@@ -71,7 +71,11 @@ function startContainer(container, callback) {
   });
 }
 
-function createAndStart(containerName, imageName, createOptions, binds, callback) {
+//The startOptions parameter is set as the container's default start options
+//whenever the requested container does not exist and needs to be created.
+//It is are ignored when an existing container is already running,
+//and also when it exists but was stopped.
+function createAndStart(containerName, imageName, createOptions, startOptions, callback) {
   console.log('createAndStart', containerName, imageName, createOptions, binds);
   ensureImageExists(imageName, function(err1) {
     if (err1) {
@@ -83,7 +87,7 @@ function createAndStart(containerName, imageName, createOptions, binds, callback
           callback(err2);
         } else {
           try {
-            container.defaultOptions.start.Binds = binds;
+            container.defaultOptions.start = startOptions;
           } catch(e) {
             callback('Could not bind in local data' + e);
             return;
@@ -106,7 +110,7 @@ function dockerStart(containerName, callback) {
   });
 }
 
-function ensureStarted(containerName, imageName, createOptions, binds, callback) {
+function ensureStarted(containerName, imageName, createOptions, startOptions, callback) {
   if (stoppingContainerWaiters[containerName]) {
     stoppingContainerWaiters[containerName].push(callback);
   } else {
@@ -118,7 +122,7 @@ function ensureStarted(containerName, imageName, createOptions, binds, callback)
       } else if (containerStatus.exists) {
         dockerStart(containerName, callback);
       } else {
-        createAndStart(containerName, imageName, createOptions, binds, callback);
+        createAndStart(containerName, imageName, createOptions, startOptions, callback);
       }
     });
   }
