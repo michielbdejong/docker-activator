@@ -44,9 +44,6 @@ function pullImage(imageName, callback) {
   });
 }
 
-function dockerRun(containerName, imageName, createOptions, binds, callback) {
-}
-
 function ensureImageExists(imageName, callback) {
   getImageStatus(imageName, function(err, data) {
     if (err) {
@@ -75,19 +72,19 @@ function startContainer(container, callback) {
 //whenever the requested container does not exist and needs to be created.
 //It is are ignored when an existing container is already running,
 //and also when it exists but was stopped.
-function createAndStart(containerName, imageName, createOptions, startOptions, callback) {
-  console.log('createAndStart', containerName, imageName, createOptions, binds);
-  ensureImageExists(imageName, function(err1) {
+function createAndStart(options, callback) {
+  console.log('createAndStart', options);
+  ensureImageExists(options.imageName, function(err1) {
     if (err1) {
       callback(err1);
     } else {
-      createOptions.Cmd = ['/bin/bash'];
-      docker.createContainer(createOptions, function(err2, container) {
+      options.createOptions.Cmd = ['/bin/bash'];
+      docker.createContainer(options.createOptions, function(err2, container) {
         if (err2) {
           callback(err2);
         } else {
           try {
-            container.defaultOptions.start = startOptions;
+            container.defaultOptions.start = options.startOptions;
           } catch(e) {
             callback('Could not bind in local data' + e);
             return;
@@ -110,19 +107,19 @@ function dockerStart(containerName, callback) {
   });
 }
 
-function ensureStarted(containerName, imageName, createOptions, startOptions, callback) {
-  if (stoppingContainerWaiters[containerName]) {
-    stoppingContainerWaiters[containerName].push(callback);
+function ensureStarted(options, callback) {
+  if (stoppingContainerWaiters[options.containerName]) {
+    stoppingContainerWaiters[options.containerName].push(callback);
   } else {
-    getContainerStatus(containerName, function(err, containerStatus) {
+    getContainerStatus(options.containerName, function(err, containerStatus) {
       if (err) {
         callback(err);
       } else if (containerStatus.started) {
         callback(null, containerStatus);
       } else if (containerStatus.exists) {
-        dockerStart(containerName, callback);
+        dockerStart(options.containerName, callback);
       } else {
-        createAndStart(containerName, imageName, createOptions, startOptions, callback);
+        createAndStart(options, callback);
       }
     });
   }

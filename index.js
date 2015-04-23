@@ -24,10 +24,9 @@ function maybeStopOneContainer(maxIdle, preShutdownCommand, callback) {
   });
 } 
 
-function ensureStarted(containerName, options.imageName, createOptions, options.localPaths, callback) {
+function ensureStarted(options, callback) {
   lru.ping(containerName);
-  containers.ensureStarted(containerName, options.imageName, createOptions, options.localPaths, callback);
-  }
+  containers.ensureStarted(options, callback);
 }
 
 module.exports = {
