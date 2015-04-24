@@ -4,12 +4,11 @@ var Docker = require('dockerode'),
 var stoppingContainerWaiters = {};
 
 function getImageStatus(imageName, callback) {
-  callback(null, { exists: true});
+  callback(null, { exists: false});
 }
 
 function getContainerStatus(containerName, callback) {
   docker.getContainer(containerName).inspect(function(err, res) {
-    console.log(err, res);
     if (err) {
       if (err.statusCode === 404) {
         callback(null, { started: false, exists: false });
@@ -56,7 +55,7 @@ function ensureImageExists(imageName, callback) {
   });
 }
 
-function startContainer(container, callback) {
+function startContainer(container, containerName, callback) {
   container.start(function (err1) {
     if (err1) {
       callback(err1);
@@ -73,12 +72,11 @@ function startContainer(container, callback) {
 //It is are ignored when an existing container is already running,
 //and also when it exists but was stopped.
 function createAndStart(options, callback) {
-  console.log('createAndStart', options);
-  ensureImageExists(options.imageName, function(err1) {
+  ensureImageExists(options.createOptions.Image, function(err1) {
     if (err1) {
       callback(err1);
     } else {
-      options.createOptions.Cmd = ['/bin/bash'];
+      //options.createOptions.Cmd = ['/bin/bash'];
       docker.createContainer(options.createOptions, function(err2, container) {
         if (err2) {
           callback(err2);
@@ -89,7 +87,7 @@ function createAndStart(options, callback) {
             callback('Could not bind in local data' + e);
             return;
           }
-          startContainer(container, callback);
+          startContainer(container, options.createOptions.name, callback);
         }
       });
     }
@@ -97,12 +95,11 @@ function createAndStart(options, callback) {
 }
 
 function dockerStart(containerName, callback) {
-  console.log('dockerStart', containerName);
   docker.getContainer(containerName, function(err1, container) {
     if (err1) {
       callback(err1);
     } else {
-      startContainer(container, callback);
+      startContainer(container, containerName, callback);
     }
   });
 }
@@ -154,7 +151,7 @@ function stop(containerName, preShutDownCommand, callback) {
     stoppingContainerWaiters[containerName] = [];
     exec(containerName, preShutDownCommand, function(err) {
       if (err) {
-        console.log('backup failed, not stopping this container now');
+        callback('backup failed, not stopping this container now');
         delete stoppingContainerWaiters[containerName];
       } else {
         var container = docker.getContainer(containerName);

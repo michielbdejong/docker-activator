@@ -18,14 +18,14 @@ function maybeStopOneContainer(maxIdle, preShutdownCommand, callback) {
       return;
     } else {
       if (data.age > maxIdle) {
-        containers.stop(data.containerName, preShutDownCommand, callback);
+        containers.stop(data.createOptions.name, preShutDownCommand, callback);
       }
     }
   });
 } 
 
 function ensureStarted(options, callback) {
-  lru.ping(containerName);
+  lru.ping(options.createOptions.name);
   containers.ensureStarted(options, callback);
 }
 
