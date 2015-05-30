@@ -1,7 +1,10 @@
 {
   "name": "docker-activator",
-  "repository": "https://github.com/michielbdejong/docker-activator",
-  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michielbdejong/docker-activator"
+  },
+  "version": "0.0.2",
   "dependencies": {
     "dockerode": "*"
   },
@@ -16,5 +19,32 @@
     "test-mocha": "mocha",
     "test-jshint": "jshint ./*.js --config ./test/.jshintrc"
   },
-  "main": "index.js"
+  "main": "index.js",
+  "gitHead": "75b438c36ed5af50fe13581b9112539e0cc4bb02",
+  "description": "ensure a Docker container is started (for use in socket activation proxies)",
+  "bugs": {
+    "url": "https://github.com/michielbdejong/docker-activator/issues"
+  },
+  "homepage": "https://github.com/michielbdejong/docker-activator",
+  "_id": "docker-activator@0.0.2",
+  "_shasum": "c3b4800acb6b6ea19fea832a02fa772ae8f93db7",
+  "_from": "docker-activator@",
+  "_npmVersion": "1.4.21",
+  "_npmUser": {
+    "name": "michielbdejong",
+    "email": "michiel@unhosted.org"
+  },
+  "maintainers": [
+    {
+      "name": "michielbdejong",
+      "email": "michiel@unhosted.org"
+    }
+  ],
+  "dist": {
+    "shasum": "c3b4800acb6b6ea19fea832a02fa772ae8f93db7",
+    "tarball": "http://registry.npmjs.org/docker-activator/-/docker-activator-0.0.2.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/docker-activator/-/docker-activator-0.0.2.tgz",
+  "readme": "ERROR: No README data found!"
 }

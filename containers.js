@@ -61,6 +61,7 @@ function startContainer(container, containerName, callback) {
       callback(err1);
     } else {
       getContainerStatus(containerName, function(err2, data) {
+console.log('container status', containerName, err2, data);
         callback(err2, data.ipaddr);
       });
     }
@@ -105,16 +106,18 @@ function dockerStart(containerName, callback) {
 }
 
 function ensureStarted(options, callback) {
-  if (stoppingContainerWaiters[options.containerName]) {
-    stoppingContainerWaiters[options.containerName].push(callback);
+  if (stoppingContainerWaiters[options.createOptions.name]) {
+    stoppingContainerWaiters[options.createOptions.name].push(callback);
+console.log('ensureStarted - container is stopping!');
   } else {
-    getContainerStatus(options.containerName, function(err, containerStatus) {
+    getContainerStatus(options.createOptions.name, function(err, containerStatus) {
+console.log('ensureStarted - container status', options.createOptions.name, err, containerStatus);
       if (err) {
         callback(err);
       } else if (containerStatus.started) {
         callback(null, containerStatus);
       } else if (containerStatus.exists) {
-        dockerStart(options.containerName, callback);
+        dockerStart(options.createOptions.name, callback);
       } else {
         createAndStart(options, callback);
       }
