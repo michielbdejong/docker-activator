@@ -27,7 +27,13 @@ function getContainerStatus(containerName, callback) {
 }
 
 function getRunningContainers(callback) {
-  callback(null, []);
+  docker.listContainers(function (err, containers) {
+    var list = [];
+    for (var i=0; i<containers.length; i++) {
+      list.push(containers[i].Names[0].substring(1));
+    }
+    callback(null, list);
+  });
 }
 
 function pullImage(imageName, callback) {
