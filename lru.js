@@ -5,10 +5,11 @@ function ping(containerName) {
   lastUsed[containerName] = new Date().getTime();
 }
 
-function pingList(list) {
+function pingList(list, callback) {
   for (var i=0; i<list.length; i++) {
     ping(list[i]);
   }
+  callback(null);
 }
 
 function getOldest(callback) {
