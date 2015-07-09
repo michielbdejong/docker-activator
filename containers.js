@@ -121,6 +121,10 @@ function ensureStarted(options, callback) {
 }
 
 function exec(containerName, command, callback) {
+  if (command === '') {
+    callback(null);
+    return;
+  }
   docker.getContainer(containerName).exec({ Cmd: [ 'sh', command ] }, function(err, exec) {
     exec.start(function(err, stream) {
       if (err) {
