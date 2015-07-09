@@ -18,7 +18,7 @@ function maybeStopOneContainer(maxIdle, preShutdownCommand, callback) {
       return;
     } else {
       if (data.age > maxIdle) {
-        containers.stop(data.containerName, preShutDownCommand, callback);
+        containers.stop(data.containerName, preShutdownCommand, callback);
       }
     }
   });
