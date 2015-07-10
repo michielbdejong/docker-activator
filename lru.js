@@ -5,10 +5,17 @@ function ping(containerName) {
   lastUsed[containerName] = new Date().getTime();
 }
 
-function pingList(list, callback) {
+function updateList(list, callback) {
+  var now = new Date().getTime();
+  var newList = {};
   for (var i=0; i<list.length; i++) {
-    ping(list[i]);
+    if (lastUsed[list[i]]) {
+      newList[list[i]] = lastUsed[list[i]];
+    } else {
+      newList[list[i]] = now;
+    }
   }
+  lastUsed = newList;
   callback(null);
 }
 
@@ -32,7 +39,7 @@ function remove(containerName) {
 
 module.exports = {
   ping: ping,
-  pingList: pingList,
+  updateList: updateList,
   getOldest: getOldest,
   remove: remove
 };

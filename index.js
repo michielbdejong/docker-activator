@@ -1,12 +1,22 @@
 var containers = require('./containers'),
-    lru = require('./lru');
+    lru = require('./lru'),
+    lastRunningCheck = 0,
+    RUNNING_CHECK_INTERVAL = 600 * 1000;
 
 function init(callback) {
+  maybeDoRunningCheck(callback);
+}
+
+function maybeDoRunningCheck(callback) {
+  if (new Date().getTime() - lastRunningCheck < RUNNING_CHECK_INTERVAL) {
+    callback(null);
+    return;
+  }
   containers.getRunningContainers(function(err, list) {
     if (err) {
       callback(err);
     } else {
-      lru.pingList(list, callback);
+      lru.updateList(list, callback);
     }
   });
 }
